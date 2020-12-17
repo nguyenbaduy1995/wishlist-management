@@ -10,10 +10,6 @@ class WishListService {
   }
 
   async create(user, items) {
-    if (!user) {
-      throw new Error()
-    }
-
     const normalizedItems = items.map(item => ({ itemId: item.id, quantity: item.quantity }))
 
     const wishlist = await this.model.createWithItems(user, normalizedItems)
@@ -50,5 +46,18 @@ class WishListService {
 
     return this.model.findAll({ where: query, limit, offset })
   }
+
+  async update(wishlist, items) {
+    const normalizedItems = items.map(item => ({ itemId: item.id, quantity: item.quantity }))
+    const invalidItems = normalizedItems.filter(item => item.quantity < 0)
+
+    if (invalidItems.length > 0) {
+      throw new Error('Item quantity cannot be negative')
+    }
+    const updateItems = normalizedItems.filter(item => item.quantity > 0)
+    const removeItems = normalizedItems.filter(item => item.quantity === 0)
+    return wishlist.updateItems(updateItems, removeItems)
+  }
+}
 
 export default new WishListService()

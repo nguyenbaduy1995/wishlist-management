@@ -20,10 +20,6 @@ export const getWishListByID = async (user, wishListId) => {
 }
 
 export const getWishList = async (req, res) => {
-  if (!req.wishlist) {
-    return res.status(400).json(generateErrorResponse(constants.RESPONSE.WISH_LIST_NOT_FOUND))
-  }
-
   const wishlist = await WishListService.getDetails(req.wishlist.id)
 
   res.status(200).json(generateSuccessResponse(constants.RESPONSE.GET_WISH_LIST_SUCCESSFULLY, wishlist))
@@ -32,4 +28,16 @@ export const getWishList = async (req, res) => {
 export const listWishList = async (req, res) => {
   const wishlists = await WishListService.list(req.user, req.query)
   res.status(200).json(generateSuccessResponse(constants.RESPONSE.LIST_WISH_LIST_SUCCESSFULLY, wishlists ))
+}
+
+export const updateWishList = async (req, res) => {
+  try {
+    const wishlist = req.wishlist
+    const { items } = req.body
+    await WishListService.update(wishlist, items)
+    res.status(200).json(generateSuccessResponse(constants.RESPONSE.UPDATE_WISH_LIST_SUCCESSFULLY, {}))
+  } catch (error) {
+    console.log(error)
+    res.status(400).json(generateErrorResponse(constants.RESPONSE.UPDATE_WISH_LIST_FAILED))
+  }
 }
