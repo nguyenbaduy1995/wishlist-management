@@ -14,3 +14,22 @@ export const createWishList = async (req, res) => {
     return res.status(400).json(generateErrorResponse(constants.RESPONSE.CREATE_WISH_LIST_FAILED))
   }
 }
+
+export const getWishListByID = async (user, wishListId) => {
+  return WishListService.findOne({ userId: user.id, id: wishListId })
+}
+
+export const getWishList = async (req, res) => {
+  if (!req.wishlist) {
+    return res.status(400).json(generateErrorResponse(constants.RESPONSE.WISH_LIST_NOT_FOUND))
+  }
+
+  const wishlist = await WishListService.getDetails(req.wishlist.id)
+
+  res.status(200).json(generateSuccessResponse(constants.RESPONSE.GET_WISH_LIST_SUCCESSFULLY, wishlist))
+}
+
+export const listWishList = async (req, res) => {
+  const wishlists = await WishListService.list(req.user, req.query)
+  res.status(200).json(generateSuccessResponse(constants.RESPONSE.LIST_WISH_LIST_SUCCESSFULLY, wishlists ))
+}
