@@ -1,13 +1,12 @@
 {
-  "extends": [
-    "plugin:react/recommended",
-    "standard"
-  ],
   "plugins": [
-    "jest",
-    "react"
+    "jest"
   ],
   "env": {
     "jest": true
+  },
+  "parserOptions": {
+    "ecmaVersion": 2018,
+    "sourceType": "module"
   }
 }
