@@ -32,3 +32,6 @@ const validateWishList = async (req, res, next) => {
 }
 
 router.post('', createWishList)
+router.get('', listWishList)
+router.get('/:id', validateWishList, getWishList)
+export default router
