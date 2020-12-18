@@ -1,6 +1,6 @@
 const vars = {
   port: process.env.PORT || 3000,
-  jwtSecret: process.env.jwtSecret || 'wishlist'
+  jwtSecret: process.env.JWT_SECRET || 'wishlist'
 };
 
 const configs = {

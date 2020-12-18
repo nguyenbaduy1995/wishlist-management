@@ -10,11 +10,21 @@ import UserService from 'services/user'
 
 import constants from '../constants'
 
+import { User } from 'models'
+
 const router = Router()
 
 router.get('/', (req, res) => {
   res.status(200).send('Hello from  Wishlist Management')
 })
+
+/* For testing only */
+router.get('/access-token', async (req, res) => {
+  const user = await User.findOne()
+  const token = user.generateAccessToken()
+  res.status(200).send(token)
+})
+/*  For testing only */
 
 const authenticate = async (req, res, next) => {
   if (!req.headers.token) {
