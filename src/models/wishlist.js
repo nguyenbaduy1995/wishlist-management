@@ -1,3 +1,5 @@
+import { Op } from 'sequelize'
+
 module.exports = (sequelize, DataTypes) => {
   const WishList = sequelize.define('WishList', {
     id: {
@@ -54,15 +56,25 @@ module.exports = (sequelize, DataTypes) => {
 
   /* Prototype */
 
-  WishList.prototype.updateItems = async function (items) {
+  WishList.prototype.updateItems = async function (updateItems, deleteItems) {
     const { WishListItem } = sequelize.models
-    const itemsInputs = items.map(item => ({ ...item, wishListId: this.id }))
+    const updateItemsInputs = updateItems.map(item => ({ ...item, wishListId: this.id }))
     return sequelize.transaction(async transaction => {
-      return Promise.all(itemsInputs.map(async item => {
+      await Promise.all(updateItemsInputs.map(async item => {
         return WishListItem.upsert(item, {
           transaction
         })
       }))
+
+      await WishListItem.destroy({
+        where: {
+          wishListId: this.id,
+          itemId: {
+            [Op.in]: deleteItems.map(item => item.itemId)
+          }
+        },
+        transaction
+      })
     })
   }
 
